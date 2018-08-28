@@ -25,7 +25,6 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
 
 
     public RssWidgetPresenter() {
-        Log.d(TAG, "RssWidgetPresenter: " + hashCode());
         cursor = 0;
         SQLiteDbProvider sqLiteDbProvider = new SQLiteDbProvider();
         IRssFeedStorage rssFeedRepository = new RssFeedRepository(null, sqLiteDbProvider);
@@ -37,7 +36,6 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
 
     @Override
     public void loadRssFeed(final int widgetId) {
-        Log.d(TAG, "loadRssFeed: ");
         mView.showProgressBar(widgetId);
         mRssFeedWidgetInteractor.loadRssFeedByWidgetId(widgetId)
                 .subscribe(new Subscriber<List<RssFeed>>() {
@@ -54,7 +52,29 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
                         mView.hideProgressBar(widgetId);
                     }
                 });
-        Log.d(TAG, "loadRssFeed: end");
+    }
+
+    @Override
+    public void updateRssFeeds(final int widgetId){
+        Log.d(TAG, "updateRssFeeds: ");
+        mView.showProgressBar(widgetId);
+        mRssFeedWidgetInteractor.loadUpdatedFeeds(widgetId)
+                .subscribe(new Subscriber<List<RssFeed>>() {
+                    @Override
+                    public void onData(List<RssFeed> data) {
+                        mData = data;
+                        cursor = 0;
+                        mView.hideProgressBar(widgetId);
+                        mView.showData(data.get(0));
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        mView.showErrorToast(throwable.getMessage());
+                        mView.hideProgressBar(widgetId);
+                    }
+                });
+        Log.d(TAG, "updateRssFeeds: end");
     }
 
     @Override

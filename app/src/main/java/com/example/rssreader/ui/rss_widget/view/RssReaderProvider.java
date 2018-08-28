@@ -95,7 +95,7 @@ public class RssReaderProvider extends AppWidgetProvider implements IRssWidgetVi
                 int widgetId = intent.getIntExtra(EXTRA_APPWIDGET_ID, INVALID_APPWIDGET_ID);
                 if (widgetId != INVALID_APPWIDGET_ID) {
                     mRssWidgetPresenter.loadWidgetInfo(widgetId);
-                    mRssWidgetPresenter.loadRssFeed(widgetId);
+                    mRssWidgetPresenter.updateRssFeeds(widgetId);
                 }
                 return;
             }

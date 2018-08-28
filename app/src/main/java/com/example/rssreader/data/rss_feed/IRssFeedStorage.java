@@ -16,4 +16,5 @@ public interface IRssFeedStorage {
 
     Flow<List<RssFeed>> updateAndSaveRssFeed(final URL url, final int widgetId);
 
+    Flow<List<RssFeed>> getRssFeedsLaterTime(int widgetId, int savedTimestamp);
 }

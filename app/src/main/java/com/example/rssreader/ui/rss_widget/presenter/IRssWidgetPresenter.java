@@ -7,6 +7,8 @@ public interface IRssWidgetPresenter extends IDefaultPresenter<IRssWidgetView>{
 
     void loadRssFeed(int widgetId);
 
+    void updateRssFeeds(final int widgetId);
+
     void nextFeedClick();
 
     void prevFeedClick();

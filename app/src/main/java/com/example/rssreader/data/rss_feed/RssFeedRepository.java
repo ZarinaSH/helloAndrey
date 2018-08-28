@@ -44,9 +44,6 @@ public class RssFeedRepository implements IRssFeedStorage {
                 List<RssFeed> result = new ArrayList<>();
                 try (InputStream inputStream = rssUrl.openConnection().getInputStream()) {
                     result = mRssFeedParser.parse(inputStream, widgetId);
-                    System.out.println();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
                 return result;
             }
@@ -60,7 +57,6 @@ public class RssFeedRepository implements IRssFeedStorage {
                 List<RssFeed> result = new ArrayList<>();
                 try (InputStream inputStream = url.openConnection().getInputStream()) {
                     result = mRssFeedParser.parse(inputStream, widgetId);
-                    System.out.println();
                 }
                 return result;
             }
@@ -99,13 +95,7 @@ public class RssFeedRepository implements IRssFeedStorage {
             @Override
             public List<RssFeed> call() throws Exception {
                 SQLiteDatabase readableDatabase = mDbProvider.getReadableDatabase();
-                String[] projection = {
-                        COLUMN_NAME_TITLE,
-                        COLUMN_NAME_DESCRIPTION,
-                        COLUMN_NAME_TIMESTAMP,
-                        COLUMN_NAME_GUID,
-                        COLUMN_NAME_GUID_HASH
-                };
+                String[] projection = getAllProjections();
                 String selection = COLUMN_NAME_WIDGET_ID + " = ?";
                 String[] selectionArgs = {Integer.toString(widgetId)};
                 String sortOrder = COLUMN_NAME_TIMESTAMP + " ASC";
@@ -124,6 +114,29 @@ public class RssFeedRepository implements IRssFeedStorage {
         });
     }
 
+    @Override
+    public Flow<List<RssFeed>> getRssFeedsLaterTime(final int widgetId, final int savedTimestamp) {
+        return Flow.fromCallable(new Callable<List<RssFeed>>() {
+            @Override
+            public List<RssFeed> call() throws Exception {
+                SQLiteDatabase readableDatabase = mDbProvider.getReadableDatabase();
+                String[] projection = getAllProjections();
+                String selection = COLUMN_NAME_TIMESTAMP + " > ?";
+                String[] selectionArgs = {Integer.toString(savedTimestamp)};
+                String sortOrder = COLUMN_NAME_TIMESTAMP + " DESC";
+
+                Cursor cursor = readableDatabase.query(TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                return mapCursorToRssFeedList(cursor, widgetId);
+            }
+        });
+    }
+
     private ContentValues convertRssFeedToContentValues(RssFeed rssFeed) {
         ContentValues contentValues = new ContentValues(1);
         contentValues.put(COLUMN_NAME_TITLE, rssFeed.getTitle());
@@ -135,8 +148,17 @@ public class RssFeedRepository implements IRssFeedStorage {
         return contentValues;
     }
 
+    private String[] getAllProjections() {
+        return new String[]{
+                COLUMN_NAME_TITLE,
+                COLUMN_NAME_DESCRIPTION,
+                COLUMN_NAME_TIMESTAMP,
+                COLUMN_NAME_GUID,
+                COLUMN_NAME_GUID_HASH
+        };
+    }
 
-    private List<RssFeed> mapCursorToRssFeedList(final Cursor cursor, final int widgetId) {
+    private List<RssFeed> mapCursorToRssFeedList(final Cursor cursor, int widgetId) {
         List<RssFeed> rssFeeds = new ArrayList<>();
         while (cursor.moveToNext()) {
             rssFeeds.add(mapCursorToRssFeed(cursor, widgetId));
@@ -144,7 +166,7 @@ public class RssFeedRepository implements IRssFeedStorage {
         return rssFeeds;
     }
 
-    private RssFeed mapCursorToRssFeed(final Cursor cursor, final int widgetId) {
+    private RssFeed mapCursorToRssFeed(final Cursor cursor, int widgetId) {
         String title = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_TITLE));
         String description = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_DESCRIPTION));
         String guid = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_GUID));

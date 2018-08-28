@@ -1,9 +1,16 @@
 package com.example.rssreader.ui.settings.presenter;
 
+import android.appwidget.AppWidgetManager;
+import android.content.Intent;
+
 import com.example.rssreader.R;
 import com.example.rssreader.business.widget_settings.IWidgetSettingsInteractor;
+import com.example.rssreader.ui.rss_widget.view.RssReaderProvider;
+import com.example.rssreader.ui.settings.view.ConfigureActivity;
 import com.example.rssreader.ui.settings.view.IWidgetSettingsView;
 import com.example.rssreader.utils.fx.operation.Subscriber;
+
+import static com.example.rssreader.ui.rss_widget.view.RssReaderProvider.INIT_ACTION;
 
 public class WidgetSettingsPresenter implements IWidgetSettingsPresenter {
 
@@ -47,6 +54,7 @@ public class WidgetSettingsPresenter implements IWidgetSettingsPresenter {
                         @Override
                         public void onError(Throwable throwable) {
                             mView.showInvalidUrlMessage(R.string.invalid_url);
+                            mView.hideBannerView();
                         }
                     });
         } else {
@@ -55,12 +63,13 @@ public class WidgetSettingsPresenter implements IWidgetSettingsPresenter {
     }
 
     @Override
-    public void loadDataFromServer(int widgetId, String rssUrl) {
+    public void loadDataFromServer(final int widgetId, final String rssUrl) {
         mSettingsInteractor.loadAndSaveData(rssUrl, widgetId)
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onData(Boolean data) {
                         mView.hideBannerView();
+                        mView.sendInitWidgetBroadcast(getInitWidgetIntent(widgetId));
                         mView.onSuccessLoadData();
                     }
 
@@ -69,6 +78,13 @@ public class WidgetSettingsPresenter implements IWidgetSettingsPresenter {
                         mView.hideBannerView();
                     }
                 });
+    }
+
+    private Intent getInitWidgetIntent(int widgetId){
+        Intent intent = new Intent();
+        intent.setAction(INIT_ACTION);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+        return intent;
     }
 
     @Override

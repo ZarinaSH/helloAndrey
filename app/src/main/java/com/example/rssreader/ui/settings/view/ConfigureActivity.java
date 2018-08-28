@@ -1,7 +1,6 @@
 package com.example.rssreader.ui.settings.view;
 
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,13 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RemoteViews;
-
 import com.example.rssreader.R;
+import com.example.rssreader.RssReaderApplication;
+import com.example.rssreader.di.widget_settings.WidgetModule;
 import com.example.rssreader.ui.rss_widget.view.RssReaderProvider;
 import com.example.rssreader.ui.settings.presenter.IWidgetSettingsPresenter;
-import com.example.rssreader.ui.settings.presenter.WidgetSettingsPresenter;
-import com.example.rssreader.utils.di.DI;
-
 import static android.appwidget.AppWidgetManager.*;
 import static android.widget.Toast.*;
 import static com.example.rssreader.ui.rss_widget.view.RssReaderProvider.INIT_ACTION;
@@ -34,7 +31,9 @@ public class ConfigureActivity extends AppCompatActivity implements IWidgetSetti
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.config_activity);
-        mSettingsPresenter = DI.getInstance().inject(IWidgetSettingsPresenter.class);
+        mSettingsPresenter = RssReaderApplication.getAppComponent()
+                .plus(new WidgetModule())
+                .inject(this);
 
         mSettingsPresenter.bindView(this);
         mRssUrlEditText = findViewById(R.id.input_rss_url);
@@ -95,17 +94,18 @@ public class ConfigureActivity extends AppCompatActivity implements IWidgetSetti
     }
 
     public void onSuccessLoadData() {
-        Intent intent = new Intent(ConfigureActivity.this, RssReaderProvider.class);
-        intent.setAction(INIT_ACTION);
-        int[] ids = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), RssReaderProvider.class));
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        sendBroadcast(intent);
-
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         setResult(RESULT_OK, resultValue);
         finish();
+    }
+
+    public void sendInitWidgetBroadcast(final Intent intent){
+        intent.setClass(this, RssReaderProvider.class);
+        Intent intent2 = new Intent(ConfigureActivity.this, RssReaderProvider.class);
+        intent2.setAction(INIT_ACTION);
+        intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        sendBroadcast(intent2);
     }
 
     private void showToast(@StringRes int resId) {

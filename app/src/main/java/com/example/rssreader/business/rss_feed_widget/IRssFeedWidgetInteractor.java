@@ -11,4 +11,6 @@ public interface IRssFeedWidgetInteractor {
     Flow<List<RssFeed>> loadRssFeedByWidgetId(int widgetId);
 
     Flow<WidgetSettings> loadWidgetInfo(int widgetId);
+
+    Flow<List<RssFeed>> loadUpdatedFeeds(final int widgetId);
 }
