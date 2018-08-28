@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialKeyguardLayout="@layout/rss_reader"
+    android:initialLayout="@layout/rss_reader"
+    android:minHeight="70dp"
+    android:minWidth="280dp"
+    android:configure="com.example.rssreader.ui.settings.view.ConfigureActivity"
+    android:previewImage="@drawable/rss_preview"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen" />

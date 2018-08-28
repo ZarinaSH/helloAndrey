@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#434343</color>
+    <color name="colorPrimaryDark">#1d1d1d</color>
+    <color name="colorAccent">#018786</color>
+    <color name="widget_bg">#f2494949</color>
+    <color name="widget_toolbar_bg">#f23e3e3e</color>
+</resources>

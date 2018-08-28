@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">RssReader</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="save_btn">Save</string>
+    <string name="invalid_url">Url address incorrect!</string>
+    <string name="success_url_save_msg">Url address success saved!</string>
+    <string name="loading_data">Loading data. Please wait.</string>
+    <string name="toolbar_title">Rss Widget settings</string>
+    <string name="network_not_available">Network not available. Please try again.</string>
+    <string name="widget_description_text">this is description text</string>
+    <string name="widget_title_text">This is title text</string>
+    <string name="settings">settings</string>
+    <string name="url_address">URL address</string>
+</resources>
