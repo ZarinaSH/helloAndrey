@@ -46,6 +46,7 @@ public class WidgetSettingsRepository implements IWidgetSettingsRepository {
                 if (updateResult == 0) {
                     writableDatabase.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 }
+                writableDatabase.close();
                 return true;
             }
         });

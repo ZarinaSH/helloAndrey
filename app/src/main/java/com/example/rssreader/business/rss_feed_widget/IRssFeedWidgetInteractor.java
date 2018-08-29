@@ -8,9 +8,15 @@ import java.util.List;
 
 public interface IRssFeedWidgetInteractor {
 
-    Flow<List<RssFeed>> loadRssFeedByWidgetId(int widgetId);
+    Flow<Boolean> loadRssFeedByWidgetId(int widgetId);
 
     Flow<WidgetSettings> loadWidgetInfo(int widgetId);
 
     Flow<List<RssFeed>> loadUpdatedFeeds(final int widgetId);
+
+    RssFeed getNextFeed(int widgetId);
+
+    RssFeed getPrevFeed(int widgetId);
+
+    RssFeed getFirstFeed(int widgetId);
 }

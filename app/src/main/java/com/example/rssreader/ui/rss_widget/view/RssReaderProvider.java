@@ -105,9 +105,9 @@ public class RssReaderProvider extends AppWidgetProvider implements IRssWidgetVi
             if (widgetId != INVALID_APPWIDGET_ID && mRssWidgetPresenter != null) {
                 WidgetBtn widgetBtn = (WidgetBtn) intent.getSerializableExtra("widget_btn");
                 if (widgetBtn.equals(NEXT)) {
-                    mRssWidgetPresenter.nextFeedClick();
+                    mRssWidgetPresenter.nextFeedClick(widgetId);
                 } else {
-                    mRssWidgetPresenter.prevFeedClick();
+                    mRssWidgetPresenter.prevFeedClick(widgetId);
                 }
             }
         } catch (Exception e) {
