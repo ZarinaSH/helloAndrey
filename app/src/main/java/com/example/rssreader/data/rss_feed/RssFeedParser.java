@@ -70,7 +70,7 @@ public class RssFeedParser implements IRssFeedParser {
                 if (!title.isEmpty() && !description.isEmpty() && !guid.isEmpty()) {
                     if (isItem && !mGuidSet.contains(guidHash)) {
                         mGuidSet.add(guidHash);
-                        int timestamp = ((int) System.currentTimeMillis() / 1000);
+                        long timestamp = System.currentTimeMillis();
                         RssFeed rssFeed = new RssFeed(title, description, guid, guidHash, timestamp, widgetId);
                         rssFeedds.add(rssFeed);
                     }

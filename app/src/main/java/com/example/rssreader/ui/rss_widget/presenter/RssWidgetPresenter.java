@@ -1,7 +1,5 @@
 package com.example.rssreader.ui.rss_widget.presenter;
 
-import android.util.Log;
-
 import com.example.rssreader.business.rss_feed_widget.IRssFeedWidgetInteractor;
 import com.example.rssreader.business.rss_feed_widget.RssFeedWidgetInteractor;
 import com.example.rssreader.data.rss_feed.IRssFeedStorage;
@@ -19,13 +17,8 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
 
     private IRssWidgetView mView;
     private final IRssFeedWidgetInteractor mRssFeedWidgetInteractor;
-    private volatile List<RssFeed> mData;
-    private int cursor;
-    private final String TAG = "RssWidgetPresenter";
-
 
     public RssWidgetPresenter() {
-        cursor = 0;
         SQLiteDbProvider sqLiteDbProvider = new SQLiteDbProvider();
         IRssFeedStorage rssFeedRepository = new RssFeedRepository(null, sqLiteDbProvider);
         mRssFeedWidgetInteractor = new RssFeedWidgetInteractor(
@@ -38,12 +31,11 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
     public void loadRssFeed(final int widgetId) {
         mView.showProgressBar(widgetId);
         mRssFeedWidgetInteractor.loadRssFeedByWidgetId(widgetId)
-                .subscribe(new Subscriber<List<RssFeed>>() {
+                .subscribe(new Subscriber<Boolean>() {
                     @Override
-                    public void onData(List<RssFeed> data) {
-                        mData = data;
+                    public void onData(Boolean data) {
                         mView.hideProgressBar(widgetId);
-                        mView.showData(data.get(0));
+                        mView.showData(mRssFeedWidgetInteractor.getFirstFeed(widgetId));
                     }
 
                     @Override
@@ -55,17 +47,14 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
     }
 
     @Override
-    public void updateRssFeeds(final int widgetId){
-        Log.d(TAG, "updateRssFeeds: ");
+    public void updateRssFeeds(final int widgetId) {
         mView.showProgressBar(widgetId);
         mRssFeedWidgetInteractor.loadUpdatedFeeds(widgetId)
                 .subscribe(new Subscriber<List<RssFeed>>() {
                     @Override
                     public void onData(List<RssFeed> data) {
-                        mData = data;
-                        cursor = 0;
                         mView.hideProgressBar(widgetId);
-                        mView.showData(data.get(0));
+                        mView.showData(mRssFeedWidgetInteractor.getFirstFeed(widgetId));
                     }
 
                     @Override
@@ -74,29 +63,17 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
                         mView.hideProgressBar(widgetId);
                     }
                 });
-        Log.d(TAG, "updateRssFeeds: end");
     }
 
     @Override
-    public void nextFeedClick() {
-        try {
-            cursor++;
-            mView.showData(mData.get(cursor));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void nextFeedClick(final int widgetId) {
+        mView.showData(mRssFeedWidgetInteractor.getNextFeed(widgetId));
 
     }
 
     @Override
-    public void prevFeedClick() {
-        try {
-            cursor--;
-            mView.showData(mData.get(cursor));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    public void prevFeedClick(final int widgetId) {
+        mView.showData(mRssFeedWidgetInteractor.getPrevFeed(widgetId));
     }
 
     @Override

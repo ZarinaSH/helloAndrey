@@ -102,10 +102,7 @@ public class ConfigureActivity extends AppCompatActivity implements IWidgetSetti
 
     public void sendInitWidgetBroadcast(final Intent intent){
         intent.setClass(this, RssReaderProvider.class);
-        Intent intent2 = new Intent(ConfigureActivity.this, RssReaderProvider.class);
-        intent2.setAction(INIT_ACTION);
-        intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        sendBroadcast(intent2);
+        sendBroadcast(intent);
     }
 
     private void showToast(@StringRes int resId) {

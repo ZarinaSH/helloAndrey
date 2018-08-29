@@ -7,9 +7,9 @@ public class RssFeed {
     private final int mWidgetId;
     private final String guid;
     private final int guidHash;
-    private final int savedTimestamp;
+    private final long savedTimestamp;
 
-    public RssFeed(String title, String description, String guid, int savedTimestamp, int widgetId) {
+    public RssFeed(String title, String description, String guid, long savedTimestamp, int widgetId) {
         this.title = title;
         this.description = description;
         mWidgetId = widgetId;
@@ -18,7 +18,7 @@ public class RssFeed {
         this.savedTimestamp = savedTimestamp;
     }
 
-    public RssFeed(String title, String description, String guid, int guidHash, int savedTimestamp, int widgetId) {
+    public RssFeed(String title, String description, String guid, int guidHash, long savedTimestamp, int widgetId) {
         this.title = title;
         this.description = description;
         mWidgetId = widgetId;
@@ -47,7 +47,7 @@ public class RssFeed {
         return guidHash;
     }
 
-    public int getSavedTimestamp() {
+    public long getSavedTimestamp() {
         return savedTimestamp;
     }
 
@@ -59,6 +59,7 @@ public class RssFeed {
                 ", mWidgetId=" + mWidgetId +
                 ", guid='" + guid + '\'' +
                 ", guidHash=" + guidHash +
+                ", savedTimestamp=" + savedTimestamp +
                 '}';
     }
 }

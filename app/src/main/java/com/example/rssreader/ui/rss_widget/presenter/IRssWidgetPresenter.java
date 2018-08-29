@@ -9,9 +9,9 @@ public interface IRssWidgetPresenter extends IDefaultPresenter<IRssWidgetView>{
 
     void updateRssFeeds(final int widgetId);
 
-    void nextFeedClick();
+    void nextFeedClick(int widgetId);
 
-    void prevFeedClick();
+    void prevFeedClick(int widgetId);
 
     void loadWidgetInfo(int widgetId);
 }
