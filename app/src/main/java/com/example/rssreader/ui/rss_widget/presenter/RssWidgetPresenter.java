@@ -10,6 +10,8 @@ import com.example.rssreader.entity.RssFeed;
 import com.example.rssreader.entity.WidgetSettings;
 import com.example.rssreader.ui.rss_widget.view.IRssWidgetView;
 import com.example.rssreader.utils.fx.operation.Subscriber;
+import com.example.rssreader.utils.optional.Action;
+import com.example.rssreader.utils.optional.Action1;
 
 import java.util.List;
 
@@ -35,7 +37,13 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
                     @Override
                     public void onData(Boolean data) {
                         mView.hideProgressBar(widgetId);
-                        mView.showData(mRssFeedWidgetInteractor.getFirstFeed(widgetId));
+                        mRssFeedWidgetInteractor.getFirstFeed(widgetId)
+                                .actIfAbsent(new Action1<RssFeed>() {
+                                    @Override
+                                    public void invoke(RssFeed rssFeed) {
+                                        mView.showData(rssFeed);
+                                    }
+                                });
                     }
 
                     @Override
@@ -54,7 +62,15 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
                     @Override
                     public void onData(List<RssFeed> data) {
                         mView.hideProgressBar(widgetId);
-                        mView.showData(mRssFeedWidgetInteractor.getFirstFeed(widgetId));
+                        mRssFeedWidgetInteractor
+                                .getFirstFeed(widgetId)
+                                .actIfAbsent(new Action1<RssFeed>() {
+                                    @Override
+                                    public void invoke(RssFeed rssFeed) {
+                                        mView.showData(rssFeed);
+                                    }
+                                });
+
                     }
 
                     @Override
@@ -67,13 +83,25 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
 
     @Override
     public void nextFeedClick(final int widgetId) {
-        mView.showData(mRssFeedWidgetInteractor.getNextFeed(widgetId));
+        mRssFeedWidgetInteractor.getNextFeed(widgetId)
+                .actIfAbsent(new Action1<RssFeed>() {
+                    @Override
+                    public void invoke(RssFeed rssFeed) {
+                        mView.showData(rssFeed);
+                    }
+                });
 
     }
 
     @Override
     public void prevFeedClick(final int widgetId) {
-        mView.showData(mRssFeedWidgetInteractor.getPrevFeed(widgetId));
+        mRssFeedWidgetInteractor.getPrevFeed(widgetId)
+                .actIfAbsent(new Action1<RssFeed>() {
+                    @Override
+                    public void invoke(RssFeed rssFeed) {
+                        mView.showData(rssFeed);
+                    }
+                });
     }
 
     @Override

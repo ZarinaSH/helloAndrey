@@ -9,6 +9,7 @@ import com.example.rssreader.entity.RssFeed;
 import com.example.rssreader.entity.WidgetSettings;
 import com.example.rssreader.utils.fx.Func;
 import com.example.rssreader.utils.fx.core.Flow;
+import com.example.rssreader.utils.optional.Optional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,18 +55,12 @@ public class RssFeedWidgetInteractor implements IRssFeedWidgetInteractor {
     }
 
     public Flow<List<RssFeed>> loadUpdatedFeeds(final int widgetId) {
-        List<RssFeed> rssFeeds = mRssFeedsCache.get(widgetId);
-        RssFeed max = Collections.max(rssFeeds, new Comparator<RssFeed>() {
-            @Override
-            public int compare(RssFeed o1, RssFeed o2) {
-                return Long.compare(o1.getSavedTimestamp(), o2.getSavedTimestamp());
-            }
-        });
-        return mRssFeedRepository.getRssFeedsLaterTime(widgetId, max.getSavedTimestamp())
+        return mRssFeedRepository.getRssFeedsLaterTime(widgetId)
                 .map(new Func<List<RssFeed>, List<RssFeed>>() {
                     @Override
                     public List<RssFeed> call(List<RssFeed> rssFeeds) {
-                        mRssFeedsCache.put(widgetId, rssFeeds);
+                        List<RssFeed> oldFields = mRssFeedsCache.get(widgetId);
+                        mRssFeedsCache.put(widgetId, concatRssFeedsLists(oldFields, rssFeeds));
                         mWidgetFeedsCursor.put(widgetId, 0);
                         Log.d(TAG, "call: " + rssFeeds.size());
                         return rssFeeds;
@@ -79,33 +74,36 @@ public class RssFeedWidgetInteractor implements IRssFeedWidgetInteractor {
     }
 
     @Override
-    public RssFeed getNextFeed(int widgetId) {
+    public Optional<RssFeed> getNextFeed(int widgetId) {
         Integer oldCursorVal = mWidgetFeedsCursor.get(widgetId);
         List<RssFeed> rssFeeds = mRssFeedsCache.get(widgetId);
         if (rssFeeds.size() == oldCursorVal) {
-            return rssFeeds.get(oldCursorVal);
+            return Optional.of(rssFeeds.get(oldCursorVal));
         }
         mWidgetFeedsCursor.put(widgetId, ++oldCursorVal);
-        return rssFeeds.get(oldCursorVal);
+        return Optional.of(rssFeeds.get(oldCursorVal));
     }
 
     @Override
-    public RssFeed getPrevFeed(int widgetId) {
+    public Optional<RssFeed> getPrevFeed(int widgetId) {
         Integer oldCursorVal = mWidgetFeedsCursor.get(widgetId);
         List<RssFeed> rssFeeds = mRssFeedsCache.get(widgetId);
         if (oldCursorVal == 0) {
-            return rssFeeds.get(oldCursorVal);
+            return Optional.of(rssFeeds.get(oldCursorVal));
         }
         mWidgetFeedsCursor.put(widgetId, --oldCursorVal);
-        return rssFeeds.get(oldCursorVal);
+        return Optional.of(rssFeeds.get(oldCursorVal));
     }
 
-    public RssFeed getFirstFeed(int widgetId) {
-        return mRssFeedsCache.get(widgetId).get(0);
+    public Optional<RssFeed> getFirstFeed(int widgetId) {
+        return Optional.of(mRssFeedsCache.get(widgetId).get(0));
     }
 
     private List<RssFeed> concatRssFeedsLists(List<RssFeed> oldList, List<RssFeed> newList) {
         List<RssFeed> result = new ArrayList<>(oldList);
+        if (newList.size() == 0){
+            return result;
+        }
         result.addAll(0, newList);
         return result;
     }

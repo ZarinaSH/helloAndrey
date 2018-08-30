@@ -3,6 +3,7 @@ package com.example.rssreader.business.rss_feed_widget;
 import com.example.rssreader.entity.RssFeed;
 import com.example.rssreader.entity.WidgetSettings;
 import com.example.rssreader.utils.fx.core.Flow;
+import com.example.rssreader.utils.optional.Optional;
 
 import java.util.List;
 
@@ -14,9 +15,9 @@ public interface IRssFeedWidgetInteractor {
 
     Flow<List<RssFeed>> loadUpdatedFeeds(final int widgetId);
 
-    RssFeed getNextFeed(int widgetId);
+    Optional<RssFeed> getNextFeed(int widgetId);
 
-    RssFeed getPrevFeed(int widgetId);
+    Optional<RssFeed> getPrevFeed(int widgetId);
 
-    RssFeed getFirstFeed(int widgetId);
+    Optional<RssFeed> getFirstFeed(int widgetId);
 }

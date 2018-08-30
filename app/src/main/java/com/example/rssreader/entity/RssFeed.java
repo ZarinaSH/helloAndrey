@@ -1,30 +1,66 @@
 package com.example.rssreader.entity;
 
-public class RssFeed {
+public final class RssFeed {
 
     private final String title;
     private final String description;
-    private final int mWidgetId;
+    private final int widgetId;
     private final String guid;
     private final int guidHash;
     private final long savedTimestamp;
 
-    public RssFeed(String title, String description, String guid, long savedTimestamp, int widgetId) {
+    private RssFeed(String title, String description, String guid, int guidHash, long savedTimestamp, int widgetId) {
         this.title = title;
         this.description = description;
-        mWidgetId = widgetId;
-        this.guid = guid;
-        this.guidHash = guid.hashCode();
-        this.savedTimestamp = savedTimestamp;
-    }
-
-    public RssFeed(String title, String description, String guid, int guidHash, long savedTimestamp, int widgetId) {
-        this.title = title;
-        this.description = description;
-        mWidgetId = widgetId;
+        this.widgetId = widgetId;
         this.guid = guid;
         this.guidHash = guidHash;
         this.savedTimestamp = savedTimestamp;
+    }
+
+    public static final class Builder {
+
+        private String title;
+        private String description;
+        private int widgetId;
+        private String guid;
+        private int guidHash;
+        private long savedTimestamp;
+
+        public Builder setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder setWidgetId(int widgetId) {
+            this.widgetId = widgetId;
+            return this;
+        }
+
+        public Builder setGuid(String guid) {
+            this.guid = guid;
+            return this;
+        }
+
+        public Builder setGuidHash(int guidHash) {
+            this.guidHash = guidHash;
+            return this;
+        }
+
+        public Builder setSavedTimestamp(long savedTimestamp) {
+            this.savedTimestamp = savedTimestamp;
+            return this;
+        }
+
+        public RssFeed build(){
+            return new RssFeed(title, description, guid, guidHash, savedTimestamp, widgetId);
+        }
+
     }
 
     public String getTitle() {
@@ -36,7 +72,7 @@ public class RssFeed {
     }
 
     public int getWidgetId() {
-        return mWidgetId;
+        return widgetId;
     }
 
     public String getGuid() {
@@ -52,11 +88,31 @@ public class RssFeed {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RssFeed feed = (RssFeed) o;
+
+        if (widgetId != feed.widgetId) return false;
+        if (guidHash != feed.guidHash) return false;
+        return guid.equals(feed.guid);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = widgetId;
+        result = 31 * result + guid.hashCode();
+        result = 31 * result + guidHash;
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "RssFeed{" +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", mWidgetId=" + mWidgetId +
+                ", widgetId=" + widgetId +
                 ", guid='" + guid + '\'' +
                 ", guidHash=" + guidHash +
                 ", savedTimestamp=" + savedTimestamp +

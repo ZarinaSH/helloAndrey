@@ -71,10 +71,17 @@ public class RssFeedParser implements IRssFeedParser {
                     if (isItem && !mGuidSet.contains(guidHash)) {
                         mGuidSet.add(guidHash);
                         long timestamp = System.currentTimeMillis();
-                        RssFeed rssFeed = new RssFeed(title, description, guid, guidHash, timestamp, widgetId);
+
+                        RssFeed rssFeed = new RssFeed.Builder()
+                                .setTitle(title)
+                                .setDescription(description)
+                                .setGuid(guid)
+                                .setGuidHash(guidHash)
+                                .setSavedTimestamp(timestamp)
+                                .setWidgetId(widgetId)
+                                .build();
                         rssFeedds.add(rssFeed);
                     }
-
                     guid = "";
                     title = "";
                     description = "";

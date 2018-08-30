@@ -115,22 +115,26 @@ public class RssFeedRepository implements IRssFeedStorage {
     }
 
     @Override
-    public Flow<List<RssFeed>> getRssFeedsLaterTime(final int widgetId, final long savedTimestamp) {
+    public Flow<List<RssFeed>> getRssFeedsLaterTime(final int widgetId) {
         return Flow.fromCallable(new Callable<List<RssFeed>>() {
             @Override
             public List<RssFeed> call() throws Exception {
                 SQLiteDatabase readableDatabase = mDbProvider.getReadableDatabase();
-                String[] projection = getAllProjections();
-                String selection = COLUMN_NAME_TIMESTAMP + " > ?";
-                String[] selectionArgs = {Long.toString(savedTimestamp)};
 
-                Cursor cursor = readableDatabase.query(TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        null);
+                String query = new StringBuilder()
+                        .append("SELECT * FROM ")
+                        .append(TABLE_NAME)
+                        .append(" WHERE ")
+                        .append(COLUMN_NAME_TIMESTAMP)
+                        .append(" > (SELECT MAX(")
+                        .append(COLUMN_NAME_TIMESTAMP)
+                        .append(") FROM ")
+                        .append(TABLE_NAME)
+                        .append(")").toString();
+
+                Log.d("RssFeedRepository", "call: " + query);
+
+                Cursor cursor = readableDatabase.rawQuery(query, null);
                 List<RssFeed> rssFeeds = mapCursorToRssFeedList(cursor, widgetId);
                 cursor.close();
                 return rssFeeds;
@@ -173,7 +177,14 @@ public class RssFeedRepository implements IRssFeedStorage {
         String guid = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_GUID));
         int guidHashCode = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_GUID_HASH));
         long timestamp = cursor.getLong(cursor.getColumnIndex(COLUMN_NAME_TIMESTAMP));
-        return new RssFeed(title, description, guid, guidHashCode, timestamp, widgetId);
+        return new RssFeed.Builder()
+                .setTitle(title)
+                .setDescription(description)
+                .setGuid(guid)
+                .setGuidHash(guidHashCode)
+                .setSavedTimestamp(timestamp)
+                .setWidgetId(widgetId)
+                .build();
     }
 
 }
