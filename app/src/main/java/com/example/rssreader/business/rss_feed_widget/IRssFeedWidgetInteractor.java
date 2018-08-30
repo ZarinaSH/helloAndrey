@@ -20,4 +20,6 @@ public interface IRssFeedWidgetInteractor {
     Optional<RssFeed> getPrevFeed(int widgetId);
 
     Optional<RssFeed> getFirstFeed(int widgetId);
+
+    Flow<Boolean> deleteFeedsByWidgetId(int appWidgetId);
 }

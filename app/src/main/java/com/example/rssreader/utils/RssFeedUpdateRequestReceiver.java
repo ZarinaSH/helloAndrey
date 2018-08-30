@@ -14,6 +14,7 @@ import static android.appwidget.AppWidgetManager.*;
 public class RssFeedUpdateRequestReceiver extends BroadcastReceiver {
 
     public static final String ACTION_START_UPDATE = "ACTION_UPDATE_EXERCISE";
+    public static final int RQS_C = 101;
 
     @Override
     public void onReceive(Context context, Intent intent) {

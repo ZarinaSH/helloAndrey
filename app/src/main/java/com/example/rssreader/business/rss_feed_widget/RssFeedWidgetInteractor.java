@@ -34,6 +34,7 @@ public class RssFeedWidgetInteractor implements IRssFeedWidgetInteractor {
 
     @Override
     public Flow<Boolean> loadRssFeedByWidgetId(final int widgetId) {
+        Log.d(TAG, "loadRssFeedByWidgetId: " + widgetId);
         mWidgetFeedsCursor.put(widgetId, 0);
         if (mRssFeedsCache.get(widgetId) == null || mRssFeedsCache.get(widgetId).size() == 0) {
             return mRssFeedRepository.getRssFeedsByWidgetId(widgetId)
@@ -55,6 +56,7 @@ public class RssFeedWidgetInteractor implements IRssFeedWidgetInteractor {
     }
 
     public Flow<List<RssFeed>> loadUpdatedFeeds(final int widgetId) {
+        Log.d(TAG, "loadUpdatedFeeds: " + widgetId);
         return mRssFeedRepository.getRssFeedsLaterTime(widgetId)
                 .map(new Func<List<RssFeed>, List<RssFeed>>() {
                     @Override
@@ -75,6 +77,7 @@ public class RssFeedWidgetInteractor implements IRssFeedWidgetInteractor {
 
     @Override
     public Optional<RssFeed> getNextFeed(int widgetId) {
+        Log.d(TAG, "getNextFeed: " + widgetId);
         Integer oldCursorVal = mWidgetFeedsCursor.get(widgetId);
         List<RssFeed> rssFeeds = mRssFeedsCache.get(widgetId);
         if (rssFeeds.size() == oldCursorVal) {
@@ -86,6 +89,7 @@ public class RssFeedWidgetInteractor implements IRssFeedWidgetInteractor {
 
     @Override
     public Optional<RssFeed> getPrevFeed(int widgetId) {
+        Log.d(TAG, "getPrevFeed: " + widgetId);
         Integer oldCursorVal = mWidgetFeedsCursor.get(widgetId);
         List<RssFeed> rssFeeds = mRssFeedsCache.get(widgetId);
         if (oldCursorVal == 0) {
@@ -97,6 +101,12 @@ public class RssFeedWidgetInteractor implements IRssFeedWidgetInteractor {
 
     public Optional<RssFeed> getFirstFeed(int widgetId) {
         return Optional.of(mRssFeedsCache.get(widgetId).get(0));
+    }
+
+    @Override
+    public Flow<Boolean> deleteFeedsByWidgetId(int appWidgetId) {
+        Log.d(TAG, "deleteFeedsByWidgetId: " + appWidgetId);
+        return mRssFeedRepository.deleteFeedsByWidgetId(appWidgetId);
     }
 
     private List<RssFeed> concatRssFeedsLists(List<RssFeed> oldList, List<RssFeed> newList) {

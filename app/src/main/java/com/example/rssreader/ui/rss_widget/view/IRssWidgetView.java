@@ -14,4 +14,6 @@ public interface IRssWidgetView {
     void showErrorToast(String message);
 
     void showWidgetInfo(WidgetSettings data);
+
+    void stopAlarm(int widgetId);
 }
