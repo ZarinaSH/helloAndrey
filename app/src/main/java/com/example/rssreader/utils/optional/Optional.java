@@ -1,5 +1,7 @@
 package com.example.rssreader.utils.optional;
 
+import com.example.rssreader.utils.fx.Func;
+
 public class Optional<T> {
 
     private T val;
@@ -27,6 +29,14 @@ public class Optional<T> {
             tAction1.invoke(val);
         }
         return this;
+    }
+
+    public <R> Optional<R> map(Func<? super T, ? extends R> mapper){
+        return new Optional<>(mapper.call(val));
+    }
+
+    public T get(){
+        return val;
     }
 
     public boolean isPresent(){
