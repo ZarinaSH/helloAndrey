@@ -1,5 +1,7 @@
 package com.example.rssreader.ui.rss_widget.presenter;
 
+import android.util.Log;
+
 import com.example.rssreader.business.rss_feed_widget.IRssFeedWidgetInteractor;
 import com.example.rssreader.business.rss_feed_widget.RssFeedWidgetInteractor;
 import com.example.rssreader.data.rss_feed.IRssFeedStorage;
@@ -19,6 +21,7 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
 
     private IRssWidgetView mView;
     private final IRssFeedWidgetInteractor mRssFeedWidgetInteractor;
+    private final static String TAG = "RssWidgetPresenter";
 
     public RssWidgetPresenter() {
         SQLiteDbProvider sqLiteDbProvider = new SQLiteDbProvider();
@@ -118,6 +121,25 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
 
                     }
                 });
+    }
+
+    @Override
+    public void onDeleted(int[] appWidgetIds) {
+        for (int appWidgetId : appWidgetIds) {
+            mView.stopAlarm(appWidgetId);
+            mRssFeedWidgetInteractor.deleteFeedsByWidgetId(appWidgetId)
+                    .subscribe(new Subscriber<Boolean>() {
+                        @Override
+                        public void onData(Boolean data) {
+                            Log.d(TAG, "delete res " + data);
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            Log.d(TAG, "delete error " + throwable.getMessage());
+                        }
+                    });
+        }
     }
 
     @Override

@@ -22,13 +22,16 @@ import com.example.rssreader.utils.RssFeedUpdateRequestReceiver;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 import static android.app.PendingIntent.*;
 import static android.appwidget.AppWidgetManager.*;
+import static android.content.Context.*;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.example.rssreader.entity.WidgetBtn.NEXT;
 import static com.example.rssreader.entity.WidgetBtn.PREV;
+import static com.example.rssreader.utils.RssFeedUpdateRequestReceiver.*;
 
 
 public class RssReaderProvider extends AppWidgetProvider implements IRssWidgetView {
@@ -116,14 +119,18 @@ public class RssReaderProvider extends AppWidgetProvider implements IRssWidgetVi
         }
     }
 
-    private void startAlarm(final Context context, final int widgetId) {
-        Intent updateIntent = new Intent(context, RssFeedUpdateRequestReceiver.class);
-        updateIntent.setAction(RssFeedUpdateRequestReceiver.ACTION_START_UPDATE);
-        updateIntent.putExtra(EXTRA_APPWIDGET_ID, widgetId);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = getBroadcast(context, 0, updateIntent, 0);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + mAlarmRepeatPeriod, mAlarmRepeatPeriod, pendingIntent);
-        context.sendBroadcast(updateIntent);
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        super.onDeleted(context, appWidgetIds);
+        mRssWidgetPresenter.onDeleted(appWidgetIds);
+        mRssWidgetPresenter.unbindView();
+        mRssWidgetPresenter = null;
+    }
+
+    @Override
+    public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
+        super.onRestored(context, oldWidgetIds, newWidgetIds);
+        mContextReference = new WeakReference<>(context);
     }
 
     @Override
@@ -136,19 +143,6 @@ public class RssReaderProvider extends AppWidgetProvider implements IRssWidgetVi
         getInstance(context).updateAppWidget(rssFeed.getWidgetId(), views);
     }
 
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        super.onDeleted(context, appWidgetIds);
-        mRssWidgetPresenter.unbindView();
-        mRssWidgetPresenter = null;
-    }
-
-    @Override
-    public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
-        super.onRestored(context, oldWidgetIds, newWidgetIds);
-        mContextReference = new WeakReference<>(context);
-    }
-
     private void setOnClickBtns(final RemoteViews views, final Context context, int widgetId) {
         views.setOnClickPendingIntent(R.id.nextBtn, getBtnClickIntent(context, "updateUp", widgetId, NEXT));
         views.setOnClickPendingIntent(R.id.prevBtn, getBtnClickIntent(context, "updateDown", widgetId, PREV));
@@ -159,7 +153,7 @@ public class RssReaderProvider extends AppWidgetProvider implements IRssWidgetVi
         intent.setAction(action);
         intent.putExtra("widget_btn", widgetBtn);
         intent.putExtra(EXTRA_APPWIDGET_ID, widgetId);
-        return getBroadcast(context, 0, intent, 0);
+        return getBroadcast(context, 0, intent, FLAG_UPDATE_CURRENT);
     }
 
     @Override
@@ -189,6 +183,27 @@ public class RssReaderProvider extends AppWidgetProvider implements IRssWidgetVi
     @Override
     public void showErrorToast(String message) {
         Toast.makeText(mContextReference.get(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void startAlarm(final Context context, final int widgetId) {
+        Log.d(TAG, "startAlarm: " + widgetId);
+        Intent updateIntent = new Intent(context, RssFeedUpdateRequestReceiver.class);
+        updateIntent.setAction(ACTION_START_UPDATE);
+        updateIntent.putExtra(EXTRA_APPWIDGET_ID, widgetId);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        PendingIntent pendingIntent = getBroadcast(context, RQS_C, updateIntent, FLAG_UPDATE_CURRENT);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + mAlarmRepeatPeriod, mAlarmRepeatPeriod, pendingIntent);
+        context.sendBroadcast(updateIntent);
+    }
+
+    public void stopAlarm(int appWidgetId){
+        Context context = mContextReference.get();
+        Intent intent = new Intent(context, RssFeedUpdateRequestReceiver.class);
+        intent.setAction(ACTION_START_UPDATE);
+        intent.putExtra(EXTRA_APPWIDGET_ID, appWidgetId);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        PendingIntent pendingIntent = getBroadcast(context, RQS_C, intent, FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
     }
 }
 

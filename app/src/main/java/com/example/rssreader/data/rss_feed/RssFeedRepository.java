@@ -142,6 +142,17 @@ public class RssFeedRepository implements IRssFeedStorage {
         });
     }
 
+    public Flow<Boolean> deleteFeedsByWidgetId(final int widgetId){
+        return Flow.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                SQLiteDatabase db = mDbProvider.getWritableDatabase();
+                db.delete(TABLE_NAME, COLUMN_NAME_WIDGET_ID.concat(" = ?"), new String[]{String.valueOf(widgetId)});
+                return true;
+            }
+        });
+    }
+
     private ContentValues convertRssFeedToContentValues(RssFeed rssFeed) {
         ContentValues contentValues = new ContentValues(1);
         contentValues.put(COLUMN_NAME_TITLE, rssFeed.getTitle());
