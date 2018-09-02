@@ -29,6 +29,7 @@ import static android.appwidget.AppWidgetManager.*;
 import static android.content.Context.*;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.example.rssreader.entity.WidgetBtn.IGNORE;
 import static com.example.rssreader.entity.WidgetBtn.NEXT;
 import static com.example.rssreader.entity.WidgetBtn.PREV;
 import static com.example.rssreader.utils.RssFeedUpdateRequestReceiver.*;
@@ -109,8 +110,10 @@ public class RssReaderProvider extends AppWidgetProvider implements IRssWidgetVi
                 WidgetBtn widgetBtn = (WidgetBtn) intent.getSerializableExtra("widget_btn");
                 if (widgetBtn.equals(NEXT)) {
                     mRssWidgetPresenter.nextFeedClick(widgetId);
-                } else {
+                } else if (widgetBtn.equals(PREV)) {
                     mRssWidgetPresenter.prevFeedClick(widgetId);
+                } else if (widgetBtn.equals(IGNORE)) {
+                    mRssWidgetPresenter.ignoreBtnClick(widgetId);
                 }
             }
         } catch (Exception e) {
@@ -146,6 +149,7 @@ public class RssReaderProvider extends AppWidgetProvider implements IRssWidgetVi
     private void setOnClickBtns(final RemoteViews views, final Context context, int widgetId) {
         views.setOnClickPendingIntent(R.id.nextBtn, getBtnClickIntent(context, "updateUp", widgetId, NEXT));
         views.setOnClickPendingIntent(R.id.prevBtn, getBtnClickIntent(context, "updateDown", widgetId, PREV));
+        views.setOnClickPendingIntent(R.id.ignoreBtn, getBtnClickIntent(context, "ignore", widgetId, IGNORE));
     }
 
     private PendingIntent getBtnClickIntent(final Context context, final String action, final int widgetId, final WidgetBtn widgetBtn) {
@@ -177,7 +181,6 @@ public class RssReaderProvider extends AppWidgetProvider implements IRssWidgetVi
     @Override
     public void showWidgetInfo(final WidgetSettings data) {
         RemoteViews views = new RemoteViews(mContextReference.get().getPackageName(), R.layout.rss_reader);
-
     }
 
     @Override
@@ -196,7 +199,7 @@ public class RssReaderProvider extends AppWidgetProvider implements IRssWidgetVi
         context.sendBroadcast(updateIntent);
     }
 
-    public void stopAlarm(int appWidgetId){
+    public void stopAlarm(int appWidgetId) {
         Context context = mContextReference.get();
         Intent intent = new Intent(context, RssFeedUpdateRequestReceiver.class);
         intent.setAction(ACTION_START_UPDATE);

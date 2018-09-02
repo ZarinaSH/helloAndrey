@@ -8,24 +8,26 @@ public final class RssFeed {
     private final String guid;
     private final int guidHash;
     private final long savedTimestamp;
+    private final boolean visible;
 
-    private RssFeed(String title, String description, String guid, int guidHash, long savedTimestamp, int widgetId) {
+    private RssFeed(String title, String description, String guid, int guidHash, long savedTimestamp, boolean visible, int widgetId) {
         this.title = title;
         this.description = description;
         this.widgetId = widgetId;
         this.guid = guid;
         this.guidHash = guidHash;
         this.savedTimestamp = savedTimestamp;
+        this.visible = visible;
     }
 
     public static final class Builder {
-
         private String title;
         private String description;
         private int widgetId;
         private String guid;
         private int guidHash;
         private long savedTimestamp;
+        private boolean visible;
 
         public Builder setTitle(String title) {
             this.title = title;
@@ -57,8 +59,13 @@ public final class RssFeed {
             return this;
         }
 
-        public RssFeed build(){
-            return new RssFeed(title, description, guid, guidHash, savedTimestamp, widgetId);
+        public Builder setVisibility(boolean visibility) {
+            this.visible = visibility;
+            return this;
+        }
+
+        public RssFeed build() {
+            return new RssFeed(title, description, guid, guidHash, savedTimestamp, visible, widgetId);
         }
 
     }
@@ -85,6 +92,10 @@ public final class RssFeed {
 
     public long getSavedTimestamp() {
         return savedTimestamp;
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 
     @Override

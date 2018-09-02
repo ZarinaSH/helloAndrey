@@ -1,6 +1,9 @@
 package com.example.rssreader.utils.optional;
 
 import com.example.rssreader.utils.fx.Func;
+import com.example.rssreader.utils.fx.core.Flow;
+
+import java.util.concurrent.Callable;
 
 public class Optional<T> {
 
@@ -46,6 +49,15 @@ public class Optional<T> {
     public void actValOrDefault(Action1<T> tAction1, T defaultVal) {
         if (val == null)
             tAction1.invoke(defaultVal);
+    }
+
+    public Flow<T> asFlow(){
+        return Flow.fromCallable(new Callable<T>() {
+            @Override
+            public T call() throws Exception {
+                return val;
+            }
+        });
     }
 
 }

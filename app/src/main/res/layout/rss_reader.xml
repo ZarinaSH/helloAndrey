@@ -72,13 +72,18 @@
             android:id="@+id/prevBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="prev" />
+            android:text="@string/prev" />
 
         <Button
             android:id="@+id/nextBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="next" />
+            android:text="@string/next" />
+        <Button
+            android:id="@+id/ignoreBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ignore" />
     </LinearLayout>
 
     <RelativeLayout

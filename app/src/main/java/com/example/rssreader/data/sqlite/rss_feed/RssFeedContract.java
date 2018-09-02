@@ -3,6 +3,7 @@ package com.example.rssreader.data.sqlite.rss_feed;
 import android.provider.BaseColumns;
 import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_GUID;
 import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_GUID_HASH;
+import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_IS_VISIBLE;
 import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_TIMESTAMP;
 import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_TITLE;
 import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_WIDGET_ID;
@@ -21,6 +22,7 @@ public class RssFeedContract {
         public static final String COLUMN_NAME_GUID = "guid";
         public static final String COLUMN_NAME_GUID_HASH = "guid_hash";
         public static final String COLUMN_NAME_TIMESTAMP = "timestmp";
+        public static final String COLUMN_NAME_IS_VISIBLE = "is_visible";
         public static final String COLUMN_NAME_WIDGET_ID = "widget_id";
     }
 
@@ -38,6 +40,8 @@ public class RssFeedContract {
                 .append(" TEXT, ")
                 .append(COLUMN_NAME_TIMESTAMP)
                 .append(" INTEGER, ")
+                .append(COLUMN_NAME_IS_VISIBLE)
+                .append(" INTEGER DEFAULT 1,")
                 .append(COLUMN_NAME_WIDGET_ID)
                 .append(" INTEGER)")
                 .toString();
