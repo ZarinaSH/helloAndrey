@@ -78,6 +78,7 @@ public class RssFeedParser implements IRssFeedParser {
                                 .setGuid(guid)
                                 .setGuidHash(guidHash)
                                 .setSavedTimestamp(timestamp)
+                                .setVisibility(true)
                                 .setWidgetId(widgetId)
                                 .build();
                         rssFeedds.add(rssFeed);

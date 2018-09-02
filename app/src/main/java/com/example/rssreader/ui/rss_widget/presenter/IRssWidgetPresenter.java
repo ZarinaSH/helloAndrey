@@ -16,4 +16,6 @@ public interface IRssWidgetPresenter extends IDefaultPresenter<IRssWidgetView>{
     void loadWidgetInfo(int widgetId);
 
     void onDeleted(int[] appWidgetIds);
+
+    void ignoreBtnClick(int widgetId);
 }

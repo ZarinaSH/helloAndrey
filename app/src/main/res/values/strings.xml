@@ -12,4 +12,7 @@
     <string name="widget_title_text">This is title text</string>
     <string name="settings">settings</string>
     <string name="url_address">URL address</string>
+    <string name="prev">prev</string>
+    <string name="next">next</string>
+    <string name="ignore">ignore</string>
 </resources>

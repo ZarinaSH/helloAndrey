@@ -11,9 +11,11 @@ import com.example.rssreader.data.widget_settings.WidgetSettingsRepository;
 import com.example.rssreader.entity.RssFeed;
 import com.example.rssreader.entity.WidgetSettings;
 import com.example.rssreader.ui.rss_widget.view.IRssWidgetView;
+import com.example.rssreader.utils.fx.Func;
 import com.example.rssreader.utils.fx.operation.Subscriber;
 import com.example.rssreader.utils.optional.Action;
 import com.example.rssreader.utils.optional.Action1;
+import com.example.rssreader.utils.optional.Optional;
 
 import java.util.List;
 
@@ -86,25 +88,37 @@ public class RssWidgetPresenter implements IRssWidgetPresenter {
 
     @Override
     public void nextFeedClick(final int widgetId) {
-        mRssFeedWidgetInteractor.getNextFeed(widgetId)
-                .actIfAbsent(new Action1<RssFeed>() {
-                    @Override
-                    public void invoke(RssFeed rssFeed) {
-                        mView.showData(rssFeed);
-                    }
-                });
-
+        showRssFeedIfAbsent(mRssFeedWidgetInteractor.getNextFeed(widgetId));
     }
 
     @Override
     public void prevFeedClick(final int widgetId) {
-        mRssFeedWidgetInteractor.getPrevFeed(widgetId)
-                .actIfAbsent(new Action1<RssFeed>() {
+        showRssFeedIfAbsent(mRssFeedWidgetInteractor.getPrevFeed(widgetId));
+    }
+
+    @Override
+    public void ignoreBtnClick(int widgetId) {
+        mRssFeedWidgetInteractor.ignoreBtnClick(widgetId)
+                .subscribe(new Subscriber<Optional<RssFeed>>() {
                     @Override
-                    public void invoke(RssFeed rssFeed) {
-                        mView.showData(rssFeed);
+                    public void onData(Optional<RssFeed> data) {
+                        showRssFeedIfAbsent(data);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        mView.showErrorToast(throwable.getMessage());
                     }
                 });
+    }
+
+    private void showRssFeedIfAbsent(Optional<RssFeed> rssFeedOptional) {
+        rssFeedOptional.actIfAbsent(new Action1<RssFeed>() {
+            @Override
+            public void invoke(RssFeed rssFeed) {
+                mView.showData(rssFeed);
+            }
+        });
     }
 
     @Override

@@ -22,4 +22,6 @@ public interface IRssFeedWidgetInteractor {
     Optional<RssFeed> getFirstFeed(int widgetId);
 
     Flow<Boolean> deleteFeedsByWidgetId(int appWidgetId);
+
+    Flow<Optional<RssFeed>> ignoreBtnClick(int widgetId);
 }
