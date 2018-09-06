@@ -1,13 +1,38 @@
 package com.example.rssreader.entity;
+import com.example.rssreader.utils.sql_helpers.create_table.anotation.DataField;
+import com.example.rssreader.utils.sql_helpers.create_table.anotation.DataObject;
+import com.example.rssreader.utils.sql_helpers.create_table.anotation.DataTable;
+import com.example.rssreader.utils.sql_helpers.create_table.anotation.IntegerDefault;
+import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_GUID_HASH;
+import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_IS_VISIBLE;
+import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_TIMESTAMP;
+import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_WIDGET_ID;
+import static com.example.rssreader.utils.sql_helpers.create_table.entity.Type.INTEGER;
+import static com.example.rssreader.utils.sql_helpers.create_table.entity.Type.TEXT;
 
-public final class RssFeed {
+@DataTable(tableName = "rss_feed_entry")
+public final class RssFeed implements DataObject{
 
-    private final String title;
-    private final String description;
-    private final int widgetId;
-    private final String guid;
+    @DataField(type = INTEGER, isPrimaryKey = true, name = COLUMN_NAME_GUID_HASH)
     private final int guidHash;
+
+    @DataField(type = TEXT)
+    private final String title;
+
+    @DataField(type = TEXT)
+    private final String description;
+
+    @DataField(type = INTEGER, name = COLUMN_NAME_WIDGET_ID)
+    private final int widgetId;
+
+    @DataField(type = TEXT)
+    private final String guid;
+
+    @DataField(type = INTEGER, name = COLUMN_NAME_TIMESTAMP)
     private final long savedTimestamp;
+
+    @DataField(type = INTEGER, isSetDefault = true, name = COLUMN_NAME_IS_VISIBLE)
+    @IntegerDefault(1)
     private final boolean visible;
 
     private RssFeed(String title, String description, String guid, int guidHash, long savedTimestamp, boolean visible, int widgetId) {

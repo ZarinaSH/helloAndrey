@@ -1,14 +1,11 @@
 package com.example.rssreader.data.sqlite.rss_feed;
 
 import android.provider.BaseColumns;
-import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_GUID;
-import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_GUID_HASH;
-import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_IS_VISIBLE;
-import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_TIMESTAMP;
-import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_TITLE;
-import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_WIDGET_ID;
+
+import com.example.rssreader.entity.RssFeed;
+import com.example.rssreader.utils.sql_helpers.create_table.parser.TableParser;
+
 import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.TABLE_NAME;
-import static com.example.rssreader.data.sqlite.rss_feed.RssFeedContract.RssFeedEntry.COLUMN_NAME_DESCRIPTION;
 
 public class RssFeedContract {
 
@@ -27,24 +24,7 @@ public class RssFeedContract {
     }
 
     public static String getCreateTableQuery() {
-        return new StringBuilder().append("CREATE TABLE ")
-                .append(TABLE_NAME)
-                .append(" (")
-                .append(COLUMN_NAME_GUID_HASH)
-                .append(" INTEGER PRIMARY KEY NOT NULL, ")
-                .append(COLUMN_NAME_TITLE)
-                .append(" TEXT, ")
-                .append(COLUMN_NAME_DESCRIPTION)
-                .append(" TEXT, ")
-                .append(COLUMN_NAME_GUID)
-                .append(" TEXT, ")
-                .append(COLUMN_NAME_TIMESTAMP)
-                .append(" INTEGER, ")
-                .append(COLUMN_NAME_IS_VISIBLE)
-                .append(" INTEGER DEFAULT 1,")
-                .append(COLUMN_NAME_WIDGET_ID)
-                .append(" INTEGER)")
-                .toString();
+        return TableParser.generateCreateQuery(RssFeed.class);
     }
 
     public static String getDeleteTableQuery() {
