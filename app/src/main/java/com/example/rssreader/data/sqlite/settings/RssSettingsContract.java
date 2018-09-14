@@ -1,7 +1,8 @@
 package com.example.rssreader.data.sqlite.settings;
 
 import android.provider.BaseColumns;
-
+import com.example.rssreader.entity.WidgetSettings;
+import com.example.rssreader.utils.sql_helpers.create_table.parser.TableParser;
 import static com.example.rssreader.data.sqlite.settings.RssSettingsContract.WidgetSettingsEntry.*;
 
 public class RssSettingsContract {
@@ -13,14 +14,9 @@ public class RssSettingsContract {
     }
 
     public static String getCreateTableQuery() {
-        return new StringBuilder().append("CREATE TABLE ")
-                .append(TABLE_NAME)
-                .append(" (")
-                .append(COLUMN_NAME_WIDGET_ID)
-                .append(" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, ")
-                .append(COLUMN_NAME_URL)
-                .append(" TEXT) ").toString();
+        return TableParser.generateCreateQuery(WidgetSettings.class);
     }
+
 
     public static String getDeleteTableQuery() {
         return new StringBuilder()

@@ -1,7 +1,6 @@
 package com.example.rssreader.ui.rss_widget.presenter;
 
 import android.util.Log;
-
 import com.example.rssreader.business.rss_feed_widget.IRssFeedWidgetInteractor;
 import com.example.rssreader.business.rss_feed_widget.RssFeedWidgetInteractor;
 import com.example.rssreader.data.rss_feed.IRssFeedStorage;
@@ -11,12 +10,9 @@ import com.example.rssreader.data.widget_settings.WidgetSettingsRepository;
 import com.example.rssreader.entity.RssFeed;
 import com.example.rssreader.entity.WidgetSettings;
 import com.example.rssreader.ui.rss_widget.view.IRssWidgetView;
-import com.example.rssreader.utils.fx.Func;
 import com.example.rssreader.utils.fx.operation.Subscriber;
-import com.example.rssreader.utils.optional.Action;
 import com.example.rssreader.utils.optional.Action1;
 import com.example.rssreader.utils.optional.Optional;
-
 import java.util.List;
 
 public class RssWidgetPresenter implements IRssWidgetPresenter {

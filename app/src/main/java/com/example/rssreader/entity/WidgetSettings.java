@@ -3,10 +3,21 @@ package com.example.rssreader.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class WidgetSettings implements Parcelable{
+import com.example.rssreader.data.sqlite.settings.RssSettingsContract;
+import com.example.rssreader.utils.sql_helpers.create_table.anotation.DataField;
+import com.example.rssreader.utils.sql_helpers.create_table.anotation.DataObject;
+import com.example.rssreader.utils.sql_helpers.create_table.anotation.DataTable;
+import com.example.rssreader.utils.sql_helpers.create_table.entity.Type;
 
+import static com.example.rssreader.data.sqlite.settings.RssSettingsContract.WidgetSettingsEntry.COLUMN_NAME_WIDGET_ID;
+import static com.example.rssreader.utils.sql_helpers.create_table.entity.Type.INTEGER;
+
+@DataTable(tableName = "widget_settings")
+public class WidgetSettings implements Parcelable, DataObject{
+
+    @DataField(type = Type.TEXT)
     private final String url;
-
+    @DataField(type = INTEGER, isPrimaryKey = true, name = COLUMN_NAME_WIDGET_ID)
     private final int widgetId;
 
     public WidgetSettings(String url, int widgetId) {
